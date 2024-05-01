@@ -5,22 +5,13 @@ import pandas as pd
 DataStructureCSV = pd.read_csv('C:\\Users\\Dharmin\\Downloads\\ConcordiaClasses\\PythonFunProject\\DataStructures.csv')
 SortingAlgorithmsCSV = pd.read_csv('C:\\Users\\Dharmin\\Downloads\\ConcordiaClasses\\PythonFunProject\\Sorts.csv')
 # Assign numeric values to each time complexity
-complexity_order = {'O(1)': 1, 'O(log n)': 2, 'O(n)': 3, 'O(log(n))': 4, 'O(n^2)': 5}
+complexity_order = {'O(1)': 1, 'O(log n)': 2, 'O(n)': 3, 'O(nlog(n))': 4, 'O(n^2)': 5}
 
 # Convert time complexity strings to numeric values
 DataStructureCSV['Complexity Order'] = DataStructureCSV['Speed (Time Complexity)'].map(complexity_order)
-
+SortingAlgorithmsCSV['Complexity Order'] = SortingAlgorithmsCSV['TimeComplexity'].map(complexity_order)
 # Define the Dash app
 app = Dash(__name__)
-
-# Define the layout
-app.layout = html.Div([
-    html.H1(children='Data Structures and Algorithms Time Complexities', style={'textAlign':'center'}),
-    dcc.Dropdown(options=[{'label': DataStructure, 'value': DataStructure} for DataStructure in DataStructureCSV.DataStructure.unique()], value='Array', id='dropdown-selection'),
-    html.Div(id='data-table-container', style={'margin': '20px'}),
-    dcc.Graph(id='datastructureGraph')
-])
-
 # Define callback to update the data table
 @app.callback(
     Output('data-table-container', 'children'),
@@ -58,6 +49,27 @@ def update_complexity_graph(selected_structure):
     fig.update_yaxes(tickvals=[1, 2, 3, 4, 5], ticktext=['O(1)', 'O(log n)', 'O(n)', 'O(log(n))', 'O(n^2)'])
     
     return fig
+
+
+def update_sorting_graph(SortingAlgorithmsCSV):
+    
+    # Sort the DataFrame based on the numeric values
+    # Plot the bar graph with numeric values on the y-axis
+    fig = px.bar(SortingAlgorithmsCSV, x='Name', y='Complexity Order', title=f'Time Complexity of sorting algorithms')
+
+    # Update y-axis labels to show time complexity strings
+    fig.update_yaxes(tickvals=[1, 2, 3, 4, 5], ticktext=['O(1)', 'O(log n)', 'O(n)', 'O(nlog(n))', 'O(n^2)'])
+    
+    return fig
+
+# Define the layout
+app.layout = html.Div([
+    html.H1(children='Data Structures and Algorithms Time Complexities', style={'textAlign':'center'}),
+    dcc.Dropdown(options=[{'label': DataStructure, 'value': DataStructure} for DataStructure in DataStructureCSV.DataStructure.unique()], value='Array', id='dropdown-selection'),
+    html.Div(id='data-table-container', style={'margin': '20px'}),
+    dcc.Graph(id='datastructureGraph'),
+    dcc.Graph(figure=update_sorting_graph(SortingAlgorithmsCSV))
+])
 
 
 # Run the app
