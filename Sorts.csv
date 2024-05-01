@@ -1,0 +1,7 @@
+Name,Time Complexity
+Bubble Sort,O(n^2)
+Selection Sort,O(n^2)
+Insertion Sort,O(n^2)
+Merge Sort,O(log(n))
+Quick Sort,O(log(n))
+Heap Sort,O(log(n)) 
